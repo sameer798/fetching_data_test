@@ -1,0 +1,39 @@
+.container {
+  max-width: 80%;
+ margin: auto;
+ background-color: white;
+ 
+
+}
+.control {
+  margin: 1rem 0;
+ 
+}
+
+.control label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  text-align: center;
+}
+
+.control input,
+.control textarea {
+  display: block;
+  width: 100%;
+  font: inherit;
+  padding: 0.2rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+}
+
+.control input:focus,
+.control textarea:focus {
+  outline: none;
+  border-color: #230052;
+}
+
+button {
+  background-color: rgb(170, 170, 36);
+}

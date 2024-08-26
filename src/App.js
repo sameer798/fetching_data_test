@@ -2,6 +2,7 @@ import {Button, Container, Row, Col} from 'react-bootstrap'
 import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import MoviesList from './components/MoviesList';
+import AddMovie from './components/AddMovie';
 
 function App() {
 
@@ -11,7 +12,7 @@ function App() {
 
   const fetchMoviesHandler = useCallback(()=>{
     setIsLoading(true);
-    fetch('https://swapi.dev/api/films').then(response =>{
+    fetch('https://react-http-9cccd-default-rtdb.firebaseio.com/movies.json').then(response =>{
       
       setError(null);
       if(!response.ok){
@@ -19,16 +20,27 @@ function App() {
       }
      return response.json();
     }).then(data=>{
-      const transformMoviesData = data.results.map(movieData=>{
-        return {
-          id : movieData.episode_id,
-          title : movieData.title,
-          openingText: movieData.opening_crawl,
-          releaseDate: movieData.release_date
+     
+      const loadedMovies = [];
+      for(let key in data){
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate
+        })
+      }
+      // const transformMoviesData = data.results.map(movieData=>{
+      //   return {
+      //     id : movieData.episode_id,
+      //     title : movieData.title,
+      //     openingText: movieData.opening_crawl,
+      //     releaseDate: movieData.release_date
 
-        }
-      })
-      setMoviesState(transformMoviesData)
+      //   }
+      // })
+      
+      setMoviesState(loadedMovies)
       setIsLoading(false)
     }).catch(error=> {
       setError(error.message)
@@ -39,6 +51,21 @@ function App() {
   useEffect(()=>{
     fetchMoviesHandler();
   },[fetchMoviesHandler])
+
+
+  const addMovieHandler = async (movie)=>{
+  const response = await fetch('https://react-http-9cccd-default-rtdb.firebaseio.com/movies.json', {
+      method: 'POST',
+      body: JSON.stringify(movie),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+    console.log(data)
+  }
+
 
 let content = <p style={{color: "white", textAlign: "center"}}>Found no movies!</p>
 if(moviesState.length > 0){
@@ -52,8 +79,13 @@ if(isLoading){
   content = <p style={{color: "white", textAlign: "center"}}>Loading...</p>
 }
 
+
+
   return (
     <>
+    <section>
+      <AddMovie onAddMovie={addMovieHandler}/>
+    </section>
        <Container className='mt-5'>
         <Row className="justify-content-center">
           <Col xs='auto'>
