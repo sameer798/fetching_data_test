@@ -7,10 +7,16 @@ function App() {
 
   const [moviesState, setMoviesState] = useState([])
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchMoviesHandler = ()=>{
+    setIsLoading(true);
     fetch('https://swapi.dev/api/films').then(response =>{
-      setIsLoading(true);
+      
+      setError(null);
+      if(!response.ok){
+        throw new Error('Something went wrong!');
+      }
      return response.json();
     }).then(data=>{
       const transformMoviesData = data.results.map(movieData=>{
@@ -24,8 +30,23 @@ function App() {
       })
       setMoviesState(transformMoviesData)
       setIsLoading(false)
+    }).catch(error=> {
+      setError(error.message)
+      setIsLoading(false)
     })
   }
+
+let content = <p style={{color: "white", textAlign: "center"}}>Found no movies!</p>
+if(moviesState.length > 0){
+  content = <MoviesList movies={moviesState}/>
+}
+
+if(error){
+  content = <p style={{color: "white", textAlign: "center"}}>{error}</p>
+}
+if(isLoading){
+  content = <p style={{color: "white", textAlign: "center"}}>Loading...</p>
+}
 
   return (
     <>
@@ -36,9 +57,11 @@ function App() {
           </Col>
         </Row>
        </Container>
-       {!isLoading && moviesState.length > 0 && <MoviesList movies={moviesState}/>}
-       {!isLoading && moviesState.length === 0 && <p style={{color: "white", textAlign: "center"}}>data not found...</p>}
+       {/* {!isLoading && moviesState.length > 0 && <MoviesList movies={moviesState}/>}
+       {!isLoading && moviesState.length === 0 && !error && <p style={{color: "white", textAlign: "center"}}>data not found...</p>}
        {isLoading && <p style={{color: "white", textAlign: "center"}}>Loading...</p>}
+       {!isLoading && error && <p style={{color: "white", textAlign: "center"}}>{error}</p>} */}
+       {content}
     </>
   );
 }
