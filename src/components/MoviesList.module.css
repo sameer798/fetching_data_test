@@ -1,0 +1,15 @@
+.movies-list{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 80%;
+    margin: auto;
+    border-radius: 8px;
+    background-color: azure;
+    margin-top: 20px;
+}
+
+.movies-list h2 {
+    color: chocolate;
+}
