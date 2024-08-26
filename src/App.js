@@ -1,5 +1,5 @@
 import {Button, Container, Row, Col} from 'react-bootstrap'
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import MoviesList from './components/MoviesList';
 
@@ -9,7 +9,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchMoviesHandler = ()=>{
+  const fetchMoviesHandler = useCallback(()=>{
     setIsLoading(true);
     fetch('https://swapi.dev/api/films').then(response =>{
       
@@ -34,7 +34,11 @@ function App() {
       setError(error.message)
       setIsLoading(false)
     })
-  }
+  },[])
+
+  useEffect(()=>{
+    fetchMoviesHandler();
+  },[fetchMoviesHandler])
 
 let content = <p style={{color: "white", textAlign: "center"}}>Found no movies!</p>
 if(moviesState.length > 0){
