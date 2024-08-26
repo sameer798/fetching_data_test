@@ -3,18 +3,14 @@ import { useState } from 'react';
 import './App.css';
 import MoviesList from './components/MoviesList';
 
-// const DUMMY_MOVIES = [
-//   {id:1, title: "Some dummy movie", releaseDate: "2022-02-11", openingText : "This is opening text of movie"},
-//   {id:2, title: "Some dummy movie", releaseDate: "2022-02-11", openingText : "This is opening text of movie"},
-//   {id:3, title: "Some dummy movie", releaseDate: "2022-02-11", openingText : "This is opening text of movie"},
-//   {id:4, title: "Some dummy movie", releaseDate: "2022-02-11", openingText : "This is opening text of movie"},
-// ]
-
 function App() {
 
   const [moviesState, setMoviesState] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
+
   const fetchMoviesHandler = ()=>{
     fetch('https://swapi.dev/api/films').then(response =>{
+      setIsLoading(true);
      return response.json();
     }).then(data=>{
       const transformMoviesData = data.results.map(movieData=>{
@@ -27,6 +23,7 @@ function App() {
         }
       })
       setMoviesState(transformMoviesData)
+      setIsLoading(false)
     })
   }
 
@@ -39,7 +36,9 @@ function App() {
           </Col>
         </Row>
        </Container>
-       <MoviesList movies={moviesState}/>
+       {!isLoading && moviesState.length > 0 && <MoviesList movies={moviesState}/>}
+       {!isLoading && moviesState.length === 0 && <p style={{color: "white", textAlign: "center"}}>data not found...</p>}
+       {isLoading && <p style={{color: "white", textAlign: "center"}}>Loading...</p>}
     </>
   );
 }
