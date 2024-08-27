@@ -64,12 +64,24 @@ function App() {
 
     const data = await response.json();
     console.log(data)
+    fetchMoviesHandler();
+   
   }
+
+
+  async function deleteHndler(id) {
+     await fetch(`https://react-http-9cccd-default-rtdb.firebaseio.com/movies/${id}.json`, {
+        method: 'DELETE'       
+    })
+
+    setMoviesState((prevMovies) => prevMovies.filter(movie => movie.id !== id));
+  
+}
 
 
 let content = <p style={{color: "white", textAlign: "center"}}>Found no movies!</p>
 if(moviesState.length > 0){
-  content = <MoviesList movies={moviesState}/>
+  content = <MoviesList movies={moviesState} onDeleteMovie={deleteHndler}/>
 }
 
 if(error){
@@ -84,7 +96,7 @@ if(isLoading){
   return (
     <>
     <section>
-      <AddMovie onAddMovie={addMovieHandler}/>
+      <AddMovie onAddMovie={addMovieHandler} />
     </section>
        <Container className='mt-5'>
         <Row className="justify-content-center">
